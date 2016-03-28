@@ -1,0 +1,288 @@
+/*
+Citizens:
+GREEN:  #4B8B2B
+DARK GREEN:  #4A6F32
+LIGHT GREEN: #A8C493
+BLUE #1D4E90
+RED #AF272F
+
+CHARCOAL: #181717
+GRAY: #6D6E72
+LIGHT GRAY: #949599
+
+*/
+
+/************************** Universal Assignments **************************/
+.list-group-item{
+	text-align: center !important;
+}
+.past-due{
+	background-color: #FF0000!important;
+}
+
+.panel-heading , .panel-title{
+	font-size: 1.25em;
+
+}
+
+.findme {
+	border-style: solid;
+	border-color: #FF0000;
+	border-width: thin;
+}
+.headshot{
+	width: 80px;
+	height: 80px;
+}
+.headshotZoom{
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+}
+div.tablediv{
+	overflow: hidden;
+	height: 20px;
+}
+div.personPageHeader{
+	position: fixed;
+	top: 51px;
+	width: 100%;
+	background-color: #FFFFFF;
+	z-index: 1;
+	padding-top: 2px;
+}
+div.clearMenu{
+	margin-top:51px;
+	padding-top: 2px;
+}
+div.searchResults{
+	position: fixed;
+	top: 51px;
+	background-color: #FFFFFF;
+	z-index: 2;
+	padding-top: 2px;
+	width: 100%;
+	height: 100%;	
+}
+div.personPageBody,div.ledgerPageBody{
+	clear: both;
+	width:100%;
+}
+div.personPageBody{
+	margin-top:138px;	
+}
+.menu-search {
+  display: block;
+  width: 100%;
+  line-height: .75;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  height: 25px;
+  padding: 1px 1px;
+  font-size: 12px;
+  border-radius: 3px;
+  margin: -5px;
+}
+div.buttonWell{
+	max-width: 300px;
+	margin: 0 auto 10px;
+	  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+}
+
+
+
+
+
+.voter-visited{
+	background-color: #D7D7D7 !important;
+	color: #888888 !important;
+}
+.row-highlight-moreinfo{
+	background-color: #009102 !important;
+	color: #FFFFFF;
+}
+.list-group-item{
+	width: 100%;
+}
+.loading-logo{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	z-index: 1100;
+	background-color: #FFFFFF;
+}
+.loading-logo .jumbotron{
+	display: block; 
+	vertical-align: middle;
+	max-width: 800px;
+	margin: auto;
+}
+.loading-logo-area{
+	background-color: #A8A8A8;
+}
+.altPrintGreen{
+	background-color: #E6E6E6 !important;
+}
+.altColorGreen{
+	background-color: #ECFBE6;
+}
+.altColorWhite{
+	background-color: #FFFFFF;
+}
+.altHighlightRow{
+	background-color: #4B8B2B !important;
+	color: #FFFFFF !important;
+}
+.findme {
+	border-style: solid;
+	border-color: #FF0000;
+	border-width: 1px;
+}
+.green-window{
+	min-height: 400px;
+}
+.green-window .form-inline{
+	padding-top: 15px;
+	
+}
+@media (min-width: 768px) {
+	.green-window, .main-heading {
+		max-width: 600px;
+	}
+	.control-buttons{
+		max-width: 600px;
+		margin-top: 10px;
+	}
+}
+@media (max-width: 767px) {
+	.index-window{
+		padding-left: 50px;
+		padding-right: 50px;
+	}
+	.green-window,.main-heading{
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+	.control-buttons{
+		margin: 10px 10px 0px 10px;
+	}
+	.green-window .container-fluid{
+		padding-left: 0px !important;
+		padding-right: 0px !important;
+	}
+}
+.control-buttons .btn{
+	width: 33.33333333%;
+}
+.green-window{
+	background-color: #FFFFFF;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #4B8B2B;
+	border-radius: 6px;
+	margin-top: 10px;
+}
+
+body {
+	background-color: #F3F3F3;
+	padding-top: 52px;
+}
+a {
+    color: #4B8B2B;
+}
+.TR-Separator{
+	height: 1px;
+	width: 80%;
+	border-style: solid;
+	border-color:#4B8B2B;
+	border-width: 1px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.TR-Table{
+	width: 100%;
+	max-width: 100%;
+	margin-bottom: 20px;
+    border-collapse: collapse !important;
+}
+.TR-Table > thead > tr > th,
+.TR-Table > tbody > tr > th,
+.TR-Table > tfoot > tr > th,
+.TR-Table > thead > tr > td,
+.TR-Table > tbody > tr > td,
+.TR-Table > tfoot > tr > td {
+  padding: 5px;
+  line-height: 1.42857143;
+  vertical-align: top;
+}
+.TR-Table > thead > tr > th {
+  vertical-align: bottom;
+}
+.locked{
+	color: #A8A8A8 !important;
+}
+.td-width-narrow{
+	width: 5%;
+}
+.td-width-medium{
+	width: 10%;
+}
+.td-width-wide{
+	
+}
+.current-selection{
+	font-weight: bold;
+	background-color: #00FF00;
+}
+.sprite-Republican, .sprite-Likely-Republican, .sprite-Independant, .sprite-Likely-Democrat, .sprite-Democrat, .sprite-Unknown{
+    width: 83px;
+    height: 75px;
+}
+.sprite-Republican{
+    background: url(../images/PartySprites.gif) 0 0;
+}
+.sprite-Likely-Republican{
+    background: url(../images/PartySprites.gif) 0 -74px;
+}
+.sprite-Independant{
+    background: url(../images/PartySprites.gif) 0 -146px;
+}
+.sprite-Likely-Democrat{
+    background: url(../images/PartySprites.gif) 0 -224px;
+}
+.sprite-Democrat{
+    background: url(../images/PartySprites.gif) 0 -300px;
+}
+.sprite-Unknown{
+    background: url(../images/PartySprites.gif) 0 -380px;
+}
+.sprite-Republican:hover{
+    background: url(../images/PartySprites.gif) -84px 0px;
+}
+.sprite-Likely-Republican:hover{
+    background: url(../images/PartySprites.gif) -84px -74px;
+}
+.sprite-Independant:hover{
+    background: url(../images/PartySprites.gif) -84px -146px;
+}
+.sprite-Likely-Democrat:hover{
+    background: url(../images/PartySprites.gif) -84px -224px;
+}
+.sprite-Democrat:hover{
+    background: url(../images/PartySprites.gif) -84px -300px;
+}
+.sprite-Unknown:hover{
+    background: url(../images/PartySprites.gif) -84px -380px;
+}
+

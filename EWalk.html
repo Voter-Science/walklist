@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="css/CanvassAppCommon.css" rel="stylesheet">
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+<title>TRC Walking App</title>
+</head>
+<body>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			</button>
+		</div>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li><a href="Index.html">HOME</a></li>
+				<li class="active"><a href="EWalk.html">Canvass</a></li>
+				<li><a href="MapIt.html?Mode=Cut">Cut Field</a></li>
+				<li><a href="Tips.html">Tips</a></li>
+			</ul>
+		</div>
+		<!-- /.navbar-collapse -->
+	</div>
+	<!-- /.container-fluid -->
+</nav>
+<div class='loading-logo container hidden'>
+	<div class="jumbotron">
+		<h1><img src="https://trcanvasdata.blob.core.windows.net/images/TRC-logo.png" width=30%;/>&nbsp;&nbsp; Canvas App</h1>
+	</div>
+</div>
+<div class='modal' id='mdlUserInput' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+				<h4 class='modal-title' id='lblModalTitle'>Modal Title</h4>
+			</div>
+			<div class='modal-body'>
+				<div id='divHtmlSpace'>
+					<p>
+						 Lorem ipsum stuff about cabbage
+					</p>
+				</div>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div class='container green-window list-select'>
+	<form>
+		<div class='form-group has-success has-feedback'>
+			<label for='inpWalkList'>Canvass Code</label>
+			<input type='text' class='form-control' id='inpWalkList' placeholder='Code/Walk List Name'>
+		</div>
+	</form>
+	<div class='Results-Container container-fluid'>
+	</div>
+	<button class='btn btn-success' type='button' onclick='funcSubmitWalkList()'>Submit</button>
+</div>
+<div class="container green-window street-select hidden">
+	<div class='pull-right' style="padding-top:10px;">
+		<button type="button" class="btn btn-success" onclick='funcDropCarPin()'>Park Car</button>
+	</div>
+	<h3>E-Walk List&nbsp;<small>(Parameters)</small></h3>
+	<form>
+		<div class='form-group has-success has-feedback'>
+			<label for='inpSearch'>What Street are you on?</label>
+			<input type='text' class='form-control' id='inpSearch' onkeyup='funcFindStreet()' placeholder='Street Name' onfocus='funcClearStreetField()'>
+		</div>
+	</form>
+	<div class="Results-Container container-fluid">
+	</div>
+	<form id='frmDirection'>
+		<div class="radio">
+			<label>
+			<input type="radio" name="rdbDirection" id="rdbDirection1" value="High2Low" checked>
+			I am walking from high street numbers to low </label>
+		</div>
+		<div class="radio">
+			<label>
+			<input type="radio" name="rdbDirection" id="rdbDirection2" value="Low2High">
+			I am walking from low street numbers to high </label>
+		</div>
+	</form>
+	<div class='TR-Separator'>
+	</div>
+	<form id='frmOddEven' onchange='funcChooseOddEven()'>
+		<div class="radio">
+			<label>
+			<input type="radio" name="rdbOddEven" id="rdbOddEven1" value="Both" checked>
+			I will hit houses on both sides of the street as I walk </label>
+		</div>
+		<div class="radio">
+			<label>
+			<input type="radio" name="rdbOddEven" id="rdbOddEven2" value="OddEven">
+			I want to walk down one side of the street, then come back down the other (sort by odd/even street numbers) </label>
+		</div>
+	</form>
+	<div id='div2ndSeperator' class='TR-Separator hidden'>
+	</div>
+	<form id='frmOddEvenSequence' class='hidden'>
+		<div class="radio">
+			<label>
+			<input type="radio" name="rdbOddEvenSequence" id="rdbOddEvenSequence1" value="Odd" checked>
+			I will hit ODD numbered houses first </label>
+		</div>
+		<div class="radio">
+			<label>
+			<input type="radio" name="rdbOddEvenSequence" id="rdbOddEvenSequence2" value="Even">
+			I will hit EVEN numbered houses first </label>
+		</div>
+	</form>
+</div>
+<div class="green-window container-fluid door-select hidden">
+	<div class="container-fluid">
+		<div id='divStreetNos' class="row">
+			<div class="col-xs-3 text-left h4">
+				 PREV
+			</div>
+			<div class="col-xs-6 text-center h3">
+				<strong>HERE</strong>
+			</div>
+			<div class="col-xs-3 text-right h4">
+				 NEXT
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 text-center h4 div-street-name">
+				 NE 118th Street
+			</div>
+		</div>
+	</div>
+	<div class='div-voter-holder container-fluid'>
+	</div>
+</div>
+<label for='slctNoContact' class='hidden'>No Contact:</label>
+<select class='form-control hidden' id='slctNoContact' onchange='funcNoContactResult()'>
+	<option value='No Answer'>No Answer</option>
+	<option value='No Solicitors Sign'>No Solicitors Sign</option>
+	<option value='Gated'>Gated</option>
+	<option value='Unknown Person'>Unknown Person</option>
+	<option value='Try Again'>Try Again</option>
+	<option value='Not accessable'>Not accessable</option>
+	<option value='Voter Moved'>Voter Moved</option>
+	<option value='DO NOT DOORBELL'>DO NOT DOORBELL</option>
+	<option value='Add . . .'>Add . . .</option>
+	<!-- <option value='Clear Door'>Clear Door</option> -->
+</select>
+<div class="container green-window person-select hidden">
+	<div class='container-fluid'>
+		<div class='row'>
+			<div id='divContactName' class='col-xs-11 text-center h3'>
+				<strong>CONTACT NAME</strong>
+			</div>
+			<div id='divContactID' class='hidden'>
+			</div>
+			<div id='divVoterID' class='hidden'>
+			</div>
+		</div>
+		<div class='row'>
+			<textarea id='txtContactNotes' class='form-control' rows='3' placeholder='Contact notes' , reasons for classifications></textarea>
+		</div>
+		<div class='row'>
+			<div class='form-inline container'>
+				<label for='IssuesOfImport'>Issues:&nbsp;</label><input type='text' id='IssuesOfImport' class='form-control' onfocus=funcCreateDriveDown('IssuesOfImport','Top') placeholder='Click for options'>
+				<div class='Drive-Down hidden'>
+					<div class='Drive-Down-Parent'>IssuesOfImport<div class='Drive-Down-Child'>Education</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport<div class='Drive-Down-Child'>Transportation</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport<div class='Drive-Down-Child'>Environment</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport<div class='Drive-Down-Child'>Social</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport<div class='Drive-Down-Child'>Fiscal</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport<div class='Drive-Down-Child'>Political Environement</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>Is Teacher</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>Teacher Pay</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>Unions</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>Charter Schools</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>Early Learning</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>College Tuition</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Education<div class='Drive-Down-Child'>Standardized Testing</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment<div class='Drive-Down-Child'>Climate Change</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment<div class='Drive-Down-Child'>Conservation</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment<div class='Drive-Down-Child'>Clean Air</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment<div class='Drive-Down-Child'>Clean Water</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment;Climate Change<div class='Drive-Down-Child'>Alarmist</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment;Climate Change<div class='Drive-Down-Child'>Denier</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment;Climate Change<div class='Drive-Down-Child'>Pro-Carbon Tax</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Environment;Climate Change<div class='Drive-Down-Child'>Pro-Cap and Trade</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal<div class='Drive-Down-Child'>Taxes</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal<div class='Drive-Down-Child'>Gov Spending</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal<div class='Drive-Down-Child'>Regulation</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal<div class='Drive-Down-Child'>Minimum Wage</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal;Minimum Wage<div class='Drive-Down-Child'>Pro Min Wage</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal;Minimum Wage<div class='Drive-Down-Child'>Anti Min Wage</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal;Taxes<div class='Drive-Down-Child'>Pro Income Tax</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal;Taxes<div class='Drive-Down-Child'>No Income Tax</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Fiscal;Taxes<div class='Drive-Down-Child'>Tax Reform Needed</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social<div class='Drive-Down-Child'>Abortion</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social<div class='Drive-Down-Child'>Marriage Equality</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social<div class='Drive-Down-Child'>Religious Freedom</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social<div class='Drive-Down-Child'>Health Care</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social<div class='Drive-Down-Child'>Guns</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social<div class='Drive-Down-Child'>Public Safety</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Abortion<div class='Drive-Down-Child'>Pro Life</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Guns<div class='Drive-Down-Child'>Pro Gun Control</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Guns<div class='Drive-Down-Child'>2nd Ammendment Rights</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Health Care<div class='Drive-Down-Child'>Anti ObamaCare</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Health Care<div class='Drive-Down-Child'>Pro ObamaCare</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Marriage Equality<div class='Drive-Down-Child'>Not for gay marriage</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Public Safety<div class='Drive-Down-Child'>Domestic Violence</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Social;Public Safety<div class='Drive-Down-Child'>Drunk Driving</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Transportation<div class='Drive-Down-Child'>Infrastructure Quality</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Transportation<div class='Drive-Down-Child'>Funding</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Transportation<div class='Drive-Down-Child'>Congestion</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Transportation<div class='Drive-Down-Child'>Tolling</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Transportation;Tolling<div class='Drive-Down-Child'>Pro Tolling</div></div>
+					<div class='Drive-Down-Parent'>IssuesOfImport;Transportation;Tolling<div class='Drive-Down-Child'>Anti Tolling</div></div>
+				</div>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='form-inline container'>
+				<label for='slctParty'>Party:&nbsp;</label>
+				<select class='form-control' id='slctParty'>
+					<option value='0 Unknown'>0 Unknown</option>
+					<option value='1 Firm GOP'>1 Firm GOP</option>
+					<option value='2 Soft GOP'>2 Soft GOP</option>
+					<option value='3 Independant'>3 Independant</option>
+					<option value='4 Soft Dem'>4 Soft Dem</option>
+					<option value='5 Firm Dem'>5 Firm Dem</option>
+					<option value='6 Refused'>6 Refused</option>
+				</select>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='form-inline container'>
+				<label for='slctResults'>Conversation Result:&nbsp;</label>
+				<select class='form-control' id='slctResults'>
+					<option value='LitDrop - Friendly'>LitDrop - Friendly</option>
+					<option value='Candidate FollowUp'>Candidate FollowUp</option>
+					<option value='LitDrop - Brusque'>LitDrop - Brusque</option>
+					<option value='Will Vote Candidate'>Will Vote Candidate</option>
+					<option value='DO NOT DOORBELL'>DO NOT DOORBELL</option>
+					<option value='Will Vote Opponent'>Will Vote Opponent</option>
+					<option value='Will Volunteer'>Will Volunteer</option>
+					<option value='Add . . .'>Add . . .</option>
+				</select>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="btn-group center-block control-buttons" role="group">
+	<button type="button" class="btn btn-success" onclick='funcBtnLeft()'>SORRY</button>
+	<button type="button" class="btn btn-default" onclick='funcBtnMiddle()'>FOR</button>
+	<button type="button" class="btn btn-success" onclick='funcBtnRight()'>ERROR</button>
+</div>
+<div class='hidden'>
+	<button id='submit an input on a person' type='button' class='btn btn-success center-block' style='width: 120px;' onclick='funcSubmitNote()'>Submit</button>
+	<button class="btn btn-default btn-lg btn-block" type="button" onclick='funcMove(-1)'>Prev</button>
+	<button class="btn btn-default btn-lg btn-block" type="button" onclick='funcMove(1)'>Next</button>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/BasicFunctions.js"></script>
+<script src="https://trcanvasdata.blob.core.windows.net/code/trc.js"> </script>
+<script src="js/Ewalk.js"></script>
+<script>
+		$(document).ready(function() {
+			funcInitialize();
+		});
+		function funcNewCanvassCode(){
+			trcPostLogin2('https://TRC-login.voter-science.com', $('#inpCanvassCode').val(), function (sheetRef) { return funcValidSheet(sheetRef);});
+		}
+	</script>
+</body>
+</html>
