@@ -5,6 +5,9 @@ function funcFindAllKeys(obj){
 	  }
 	}
 }
+function funcIsEmpty(a){
+	return (a.length == 0 || a == null || a == '' );
+}
 function funcReturnGETData()
 {
     var vars = [], hash;
