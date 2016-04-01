@@ -145,7 +145,16 @@ function funcSplitAddress(strAddress){
 	var aryTemp = strAddress.split(" ");
 	var objData = [];
 	objData['StreetNum'] = aryTemp[0];
-	objData['Street'] = aryTemp[1] + " " + aryTemp[2] + " " + aryTemp[3];
+	objData['Street'] = '';
+	for(var i=1;i<aryTemp.length;i++){
+		if(aryTemp[i].indexOf('#') > -1)
+		{
+			break;
+		}
+		if(!funcIsEmpty(aryTemp[i])){
+			objData['Street'] += aryTemp[i] + " ";
+		}
+	}
 	return objData;
 }
 function funcDateDiff(strDate){
