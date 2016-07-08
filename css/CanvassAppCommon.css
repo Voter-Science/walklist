@@ -196,7 +196,6 @@ div.buttonWell{
 
 body {
 	background-color: #F3F3F3;
-	padding-top: 52px;
 }
 a {
     color: #4B8B2B;
@@ -245,44 +244,25 @@ a {
 	font-weight: bold;
 	background-color: #00FF00;
 }
-.sprite-Republican, .sprite-Likely-Republican, .sprite-Independant, .sprite-Likely-Democrat, .sprite-Democrat, .sprite-Unknown{
-    width: 83px;
-    height: 75px;
+/* Map Styling */
+#mapDiv{
+position: relative;
 }
-.sprite-Republican{
-    background: url(../images/PartySprites.gif) 0 0;
+@media (min-width: 1500px){
+	#mapDiv{
+		width: 1575px;
+		height: 875px;
+	}
 }
-.sprite-Likely-Republican{
-    background: url(../images/PartySprites.gif) 0 -74px;
+@media (min-width: 768px) AND (max-width: 1499px){
+	#mapDiv{
+		width: 1180px;
+		height: 770px;
+	}
 }
-.sprite-Independant{
-    background: url(../images/PartySprites.gif) 0 -146px;
+@media (max-width: 767px) {
+	#mapDiv{
+		width: 370px;
+		height: 450px;
+	}
 }
-.sprite-Likely-Democrat{
-    background: url(../images/PartySprites.gif) 0 -224px;
-}
-.sprite-Democrat{
-    background: url(../images/PartySprites.gif) 0 -300px;
-}
-.sprite-Unknown{
-    background: url(../images/PartySprites.gif) 0 -380px;
-}
-.sprite-Republican:hover{
-    background: url(../images/PartySprites.gif) -84px 0px;
-}
-.sprite-Likely-Republican:hover{
-    background: url(../images/PartySprites.gif) -84px -74px;
-}
-.sprite-Independant:hover{
-    background: url(../images/PartySprites.gif) -84px -146px;
-}
-.sprite-Likely-Democrat:hover{
-    background: url(../images/PartySprites.gif) -84px -224px;
-}
-.sprite-Democrat:hover{
-    background: url(../images/PartySprites.gif) -84px -300px;
-}
-.sprite-Unknown:hover{
-    background: url(../images/PartySprites.gif) -84px -380px;
-}
-

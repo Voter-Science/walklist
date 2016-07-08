@@ -7,67 +7,24 @@ var intPREVDOOR = -1;
 var intNEXTDOOR = 1;
 var aryCURRENTSTREET = [];
 var aryDOORCOUNT = [];
-var aryVIEWING = ['list-select','street-select','door-select','person-select'];
+var aryVIEWING = ['list-select','street-select','door-select','person-select','map-view'];
 var intCURRENTVIEW = 0;
-var strWALKLIST = getCookie('WalkList');
 var intPOSTCOMPLETE = 0;
 var objSHEETLOGIN;
 var intSINGLEVOTER = 0;
+var dblCARLAT = 0;
+var dblCARLON = 0;
 
-// Do a login to convert a canvas code to a sheet reference. 
-function trcPostLogin2(
-    loginUrl,
-    canvasCode,    
-    successFunc
-    ) {
-    var url = loginUrl + "/login/code2";
-    var loginBody = {
-        Code: canvasCode,
-        AppName: "ShefferApp"
-    };
-    $.support.cors = true;
-    $.ajax({
-        url: url,
-        type: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify(loginBody),
-        success: function (sheetRef) {
-            successFunc(sheetRef);
-        },
-        error: function (e1) {
-            var msg = _getErrorMsg(e1);
-            alert("Failed to do initial login at: " + loginUrl + " for code " + canvasCode + ": " + msg);
-        }
-    });
-}
-
-function funcInitialize(){
+// Startup function called by the plugin
+function PluginMain(login) {
+    objSHEETLOGIN = login; // Save for when we do Post
+    trcGetSheetContents(login, function (contents) { return funcProcessList(contents); });
+    trcGetSheetInfo(login, function (info) { return funcRecordSheetInfo(info); });
+    intCURRENTVIEW = 1;
 	funcListFromSelect();
-	//Collect prior status of this app.  What walk list?  What view?
-	strWALKLIST = getCookie('WalkList');
-	if(!getCookie('CurrentView') || strWALKLIST == null || strWALKLIST == ''){
-		setCookie('CurrentView',0,100);
-		intCURRENTVIEW = 0;
-		funcChangeView();
-	}
-	else{
-		$('#inpWalkList').val(strWALKLIST);
-		intCURRENTVIEW = getCookie('CurrentView');
-		if(intCURRENTVIEW > 0){
-			funcPullWalkList(getCookie('WalkList'));
-		}
-		else{
-			funcChangeView();
-		}
-	}
+    funcChangeView();
 }
 function funcChangeView(){
-	if(!getCookie('CurrentView')){
-		intCURRENTVIEW = 0;
-	}
-	else{
-		intCURRENTVIEW = getCookie('CurrentView');
-	}
 	$('.Results-Container').html('');
 	//Show and Hide accordinginly
 	for(var i=0;i<aryVIEWING.length;i++){
@@ -87,7 +44,9 @@ function funcChangeView(){
 			$('.control-buttons .btn:nth-child(1)').text('New List');
 			$('.control-buttons .btn:nth-child(2)').text('MAP');
 			$('.control-buttons .btn:nth-child(3)').text('Walk');
-			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');			
+			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');
+			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');
+			funcClearStreetField();
 			break;
 		case 'door-select':
 			$('.control-buttons').removeClass('hidden');
@@ -97,7 +56,8 @@ function funcChangeView(){
 			$('.control-buttons .btn:nth-child(2)').css('visibility','visible');
 			$('.control-buttons .btn:nth-child(2)').text('NEW STREET');
 			$('.control-buttons .btn:nth-child(3)').text('NEXT');
-			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');			
+			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');
+			$('.control-buttons .btn:nth-child(3)').removeAttr("disabled");			
 			break;
 		case 'person-select':
 			$('.control-buttons').removeClass('hidden');
@@ -106,66 +66,33 @@ function funcChangeView(){
 			$('.control-buttons .btn:nth-child(1)').addClass('btn-danger');
 			$('.control-buttons .btn:nth-child(2)').css('visibility','hidden');			
 			$('.control-buttons .btn:nth-child(3)').text('Submit');
+			$('.control-buttons .btn:nth-child(3)').removeAttr("disabled");	
+			
+			break;
+		case 'map-view':
+			$('.control-buttons').addClass('hidden');
+			$('.control-buttons .btn:nth-child(1)').text('Cancel');
+			$('.control-buttons .btn:nth-child(1)').removeClass('btn-success');
+			$('.control-buttons .btn:nth-child(1)').addClass('btn-danger');
+			$('.control-buttons .btn:nth-child(2)').css('visibility','hidden');			
+			$('.control-buttons .btn:nth-child(3)').text('Submit');
+			$('.control-buttons .btn:nth-child(3)').removeAttr("disabled");	
 			
 			break;
 		default:
 			alert("switch block escape:  qe53vdadde");
 	}
 }
-function funcListGroupFromArray(ary){
-	var html = "<div class='list-group'>";
-	for(var i=0;i<ary.length;i++){
-		html += "<button type='button' class='list-group-item' onclick='funcListSelected($(this))'>";
-		html += ary[i]['WalkList'];
-		html +="</button>"
-	}
-	html += "</div>";
-	return html;
-}
-function funcSubmitWalkList(){
-	setCookie('WalkList',$('#inpWalkList').val(),1);
-	setCookie('CurrentView',1,1);
-	funcPullWalkList($('#inpWalkList').val());	
-}
-function funcPullWalkList(strListName){
-	$('.loading-logo').removeClass('hidden');
-	setCookie('WalkList',strListName,1);
-	trcPostLogin2('https://TRC-login.voter-science.com', strListName, function (login) {
-        objSHEETLOGIN = login; // Save for when we do Post
-        trcGetSheetContents(login, function (sheet) { return funcProcessList(sheet); });
-        trcGetSheetInfo(login, function (info) { return funcRecordSheetInfo(info); });
-    });
-}
 
 // Process sheet information
 function funcRecordSheetInfo(info) {
 	$('.loading-logo').addClass('hidden');
 }
-function funcSplitAddress(strAddress){
-	var aryTemp = strAddress.split(" ");
-	var objData = [];
-	objData['StreetNum'] = aryTemp[0];
-	objData['Street'] = '';
-	for(var i=1;i<aryTemp.length;i++){
-		if(aryTemp[i].indexOf('#') > -1)
-		{
-			break;
-		}
-		if(!funcIsEmpty(aryTemp[i])){
-			objData['Street'] += aryTemp[i] + " ";
-		}
-	}
-	return objData;
-}
-function funcDateDiff(strDate){
-	var d = new Date(strDate);
-	var td = new Date();
-	return Math.floor((td-d)/31556952000) + " yrs";
-}
+
 function funcProcessList(jsnReturn){
 	var aryTemp = [];
 	var x,y;
-	var strVisitedDoors;
+	var strVisitedDoors = '@@@';
 	for(x=0;x<aryFIELDS.length;x++){
 		aryTemp[aryFIELDS[x]] =  String(jsnReturn[aryFIELDS[x]]).split(",");
 	}
@@ -194,38 +121,37 @@ function funcProcessList(jsnReturn){
 			x--;
 		}
 	}
-
 	if(aryDATA.length > 0){
-		//Do the cookies have more to tell you?
-		if(getCookie('CurrentView') > 0){
-			//Set the radio buttons
-			$("#rdbDirection1").prop("checked", isCookieTrue('Direction'));
-			$("#rdbDirection2").prop("checked", !isCookieTrue('Direction'));
-			$("#rdbOddEven1").prop("checked", isCookieTrue('OddEven'));
-			$("#rdbOddEven2").prop("checked", !isCookieTrue('OddEven'));
-			$("#rdbOddEvenSequence1").prop("checked", isCookieTrue('OddEvenSequence'));
-			$("#rdbOddEvenSequence2").prop("checked", !isCookieTrue('OddEvenSequence'));
-			funcCompileStreets();
-			funcChooseOddEven();
-			$('#inpSearch').val(getCookie("StreetName"));
-			if(getCookie('CurrentView') > 1){//You have already selected a street and are walking it
-				funcWalkStreet();
-				funcChangeView();
-			}
-			else{
-				funcChangeView();
-			}
-		}
-		else{
-			funcChangeView();
-		}
+		funcCompileStreets();
+		funcChooseOddEven();
+		funcChangeView();
 	}
 	else{
 		alert("There is no walking list with that name");
 	}
 	$('.loading-logo').addClass('hidden');
 }
-
+function funcSplitAddress(strAddress){
+	var aryTemp = strAddress.split(" ");
+	var objData = [];
+	objData['StreetNum'] = aryTemp[0];
+	objData['Street'] = '';
+	for(var i=1;i<aryTemp.length;i++){
+		if(aryTemp[i].indexOf('#') > -1)
+		{
+			break;
+		}
+		if(!funcIsEmpty(aryTemp[i])){
+			objData['Street'] += aryTemp[i] + " ";
+		}
+	}
+	return objData;
+}
+function funcDateDiff(strDate){
+	var d = new Date(strDate);
+	var td = new Date();
+	return Math.floor((td-d)/31556952000) + " yrs";
+}
 function funcCompileStreets(){
 
 	funcSortMasterArray(true);
@@ -260,7 +186,6 @@ function funcFindStreet() {
 	var strSearchText = $('#inpSearch').val().toLowerCase();
 	var strMatches = ";";
 	var aryResults = [];
-
 	//Find matches in the array
 	for(var x=0;x<arySTREETLIST.length;x++){
 		//If the street being analyzed has text that matches the search text or the search text says "all" AND in addition to those two reaquirements you have not already added this street to the result
@@ -301,8 +226,8 @@ function funcTableOfSearchResults(ary){
 	return html;
 }
 function funcStreetSelect(obj){
+	$('.control-buttons .btn:nth-child(3)').removeAttr("disabled");	
 	$('#inpSearch').val($(obj).find('td:first-child').text());
-	setCookie('StreetName',$('#inpSearch').val(),1);
 	$('.Results-Container').html('');
 }
 function funcChooseOddEven(){
@@ -322,7 +247,6 @@ function funcBtnLeft(){
 			break;
 		case 'street-select':
 			intCURRENTVIEW = 0;
-			setCookie('CurrentView',0,1);
 			funcChangeView();
 			break;
 		case 'door-select':
@@ -330,7 +254,6 @@ function funcBtnLeft(){
 			break;
 		case 'person-select':
 			intCURRENTVIEW = 2;
-			setCookie('CurrentView',2,1);
 			funcChangeView();
 			
 			break;
@@ -344,12 +267,11 @@ function funcBtnMiddle(){
 			//Not applicable  buttons aren't showing in list-select view
 			break;
 		case 'street-select':
-			window.location.href = "MapIt.html";
+			funcOpenMap();
 			break;
 		case 'door-select':
 			intCURRENTVIEW = 1;
-			setCookie('CurrentView',1,1);
-			setCookie('MapDoor',0,0);
+			intMAPDOOR = 0;
 			funcChangeView();
 			break;
 		case 'person-select':
@@ -365,9 +287,9 @@ function funcBtnRight(){
 			//Not applicable  buttons aren't showing in list-select view
 			break;
 		case 'street-select':
+			intMAPDOOR = 0;
 			funcWalkStreet();
 			intCURRENTVIEW = 2;
-			setCookie('CurrentView',2,1);
 			funcChangeView();
 			break;
 		case 'door-select':
@@ -383,9 +305,6 @@ function funcBtnRight(){
 function funcWalkStreet(){
 	var aryDoorCollector = [];
 	aryCURRENTSTREET = [];
-	setCookie('Direction',$("#rdbDirection1").prop("checked"),1);
-	setCookie('OddEven',$("#rdbOddEven1").prop("checked"),1);
-	setCookie('OddEvenSequence',$("#rdbOddEven1").prop("checked"),1);
 	$('.div-street-name').text($('#inpSearch').val());
 	var intTempDoor = 0;
 	var blnOnStreet = false;
@@ -418,18 +337,13 @@ function funcWalkStreet(){
 	if(aryCURRENTSTREET.length == 0 && blnOnStreet){
 		aryCURRENTSTREET.push(aryDoorCollector.slice());
 	}
-	if(!getCookie('MapDoor')){
-		intCURRENTDOOR = 0;
-		}
-	else{
-		var intMapDoor = getCookie('MapDoor');
+	if(intMAPDOOR != 0){
 		for(var x=0;x<aryCURRENTSTREET.length;x++){
-			if(aryCURRENTSTREET[x][0]['StreetNum'] == intMapDoor){
+			if(aryCURRENTSTREET[x][0]['StreetNum'] == intMAPDOOR){
 				intCURRENTDOOR = x;
 				break;
 			}
 		}
-		setCookie('MapDoor',0);
 	}
 	funcAddressContents();
 }
@@ -575,9 +489,10 @@ function funcIsEnd(i){
 function funcNoAnswer(){
 	$('#slctNoContact').removeClass('hidden');
 	$('#slctNoContact').focus();
+	$('#slctNoContact').addClass('hidden');	
 }
 function funcNoContactResult(){
-
+	$('#slctNoContact').addClass('hidden');
 	var strResult = $('#slctNoContact').val();
 	if( strResult == 'Other' || strResult == 'Add . . .'){
 		strResult = prompt("Add notes to this address");
@@ -613,10 +528,11 @@ function funcPersonPicked(obj){
 	$('#slctResults').val('LitDrop - Friendly');
 
 	intCURRENTVIEW = 3;
-	setCookie('CurrentView',3,1);
 	funcChangeView();
 }
 function funcRecordPersonContactTRC(){
+	//Disable the buttons
+	$(".control-buttons").addClass("hidden");
 	var strPartyTRC = $('#slctParty').val();
 	var strResultTRC = $('#slctResults').val();
 	var strNotesTRC = $('#txtContactNotes').val();
@@ -629,6 +545,12 @@ function funcRecordPersonContactTRC(){
 	else{
 		strNotesTRC += " [ISSUES: " + strIssuesTRC + "]";
 	}
+	if(funcIsEmpty(strPartyTRC)){
+		strPartyTRC = "0";	
+	}
+	else{
+		strPartyTRC = strPartyTRC.substring(0,1);
+	}
 	//Save the results to the array
 	aryCURRENTSTREET[intCURRENTDOOR][intSINGLEVOTER]['Party'] = strPartyTRC;
 	aryCURRENTSTREET[intCURRENTDOOR][intSINGLEVOTER]['Comments'] = strNotesTRC;
@@ -638,8 +560,8 @@ function funcRecordPersonContactTRC(){
 }
 
 function funcContactRecorded(){
+	$(".control-buttons btn").removeClass('hidden');
 	intCURRENTVIEW = 2;
-	setCookie('CurrentView',2,1);
 	funcMarkAddressVisited();
 	funcChangeView();
 	funcMove(1);
@@ -654,12 +576,8 @@ function funcMarkAddressVisited(){
 	}
 }
 
-function isCookieTrue(strCookie) {
-    return (getCookie(strCookie) + '').toLowerCase() === 'true';
-}
-
-
 function funcClearStreetField(){
+	$('.control-buttons .btn:nth-child(3)').attr("disabled", "disabled");
 	$('#inpSearch').val('');
 }
 
@@ -671,9 +589,8 @@ function noLocation()
 	alert('Could not find your current location');
 }
 function funcSaveCarLocation(position){
-	setCookie('CarPinLat',position.coords.latitude,1);
-	setCookie('CarPinLon',position.coords.longitude,1);
-	alert("Car location saved");
+	dblCARLAT = position.coords.latitude
+	dblCARLON = position.coords.longitude
 }
 //Modified TRC Code
 

@@ -1,0 +1,10 @@
+{
+    // ID must be unique on the gallery
+    "Id": "Walk",
+    "Name": "TestPlugin",
+    "Author" :  "Charlie",
+    "Website" :  "https://github.com/Voter-Science/walklist",
+    "Description": "(Not ready) Expiremental plugin for walk view.",
+    "Version": "0.0.1", // User SemVer
+    "Tags": [ "walk" ]
+}

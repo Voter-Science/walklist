@@ -1,3 +1,6 @@
+function funcIsEmpty(a){
+	return (a === null || a === undefined || a === '' || a.length ==0);
+}
 function funcFindAllKeys(obj){
 	for (var key in obj) {
 	  if (obj.hasOwnProperty(key)) {
@@ -225,9 +228,9 @@ function funcCreateDriveDown(strItemId,strParent){
 		strParent = strItemId;
 	}
 	$('#'+ strItemId).siblings('.Drive-Down').find('.Drive-Down-Parent').each(function (){
-		var str = $(this).clone().children().remove().end().text();
+		var str = $(this).clone().children().remove().end().text().trim();
 		if(str == strParent){
-			htmlList += "<button type='button' class='list-group-item'>" + $(this).find('div').text() + "<span class='hidden'>" + strParent + ";" + $(this).find('div').text() + "</span></button>";
+			htmlList += "<button type='button' class='list-group-item'>" + $(this).find('div').text() + "<span class='hidden'>" + strParent + ";" + $(this).find('div').text().trim() + "</span></button>";
 		}
 	});
 	htmlList += "<button type='button' class='list-group-item list-group-item-info'>DONE<span class='hidden'>" + strParent + "</span></button>";
