@@ -22,6 +22,7 @@ function PluginMain(login) {
     trcGetSheetInfo(login, function (info) { return funcRecordSheetInfo(info); });
     intCURRENTVIEW = 1;
 	funcListFromSelect();
+	$("#__debug_banner").hide();
     funcChangeView();
 }
 function funcChangeView(){
@@ -44,7 +45,8 @@ function funcChangeView(){
 			$('.control-buttons .btn:nth-child(1)').text('New List');
 			$('.control-buttons .btn:nth-child(2)').text('MAP');
 			$('.control-buttons .btn:nth-child(3)').text('Walk');
-			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');
+			//Hide the map button until the map functionality is returned
+			$('.control-buttons .btn:nth-child(2)').css('visibility','visible');
 			$('.control-buttons .btn:nth-child(3)').css('visibility','visible');
 			funcClearStreetField();
 			break;
